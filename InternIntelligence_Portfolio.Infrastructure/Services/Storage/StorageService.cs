@@ -24,11 +24,11 @@ namespace InternIntelligence_Portfolio.Infrastructure.Services.Storage
 
         public void Commit(Enlistment enlistment) => _storage.Commit(enlistment);
 
-        public async Task DeleteAllAsync(string path)
+        public async Task<Result<bool>> DeleteAllAsync(string path)
           => await _storage.DeleteAllAsync(path);
 
 
-        public async Task DeleteAsync(string path, string fileName)
+        public async Task<Result<bool>> DeleteAsync(string path, string fileName)
             => await _storage.DeleteAsync(path, fileName);
 
         public async Task DeleteMultipleAsync<T>(ICollection<T> files) where T : ApplicationFile

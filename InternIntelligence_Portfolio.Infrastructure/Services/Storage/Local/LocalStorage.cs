@@ -12,13 +12,21 @@ namespace InternIntelligence_Portfolio.Infrastructure.Services.Storage.Local
         private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
         private readonly List<(string path, string fileName)> _uploadedFiles = []; // Track uploaded files for rollback
 
-        public async Task DeleteAsync(string path, string fileName)
+        public async Task<Result<bool>> DeleteAsync(string path, string fileName)
         {
-            if (await HasFileAsync(path, fileName))
+            try
             {
-                File.Delete(GetFullPath(path, fileName));
+                if (await HasFileAsync(path, fileName))
+                {
+                    File.Delete(GetFullPath(path, fileName));
+                }
+
+                return await Task.FromResult(Result<bool>.Success(true));
             }
-            await Task.CompletedTask;
+            catch (Exception ex)
+            {
+                return Result<bool>.Failure(Error.UnexpectedError($"Unexpected error happened while deleting the file: {ex.Message}"));
+            }
         }
 
         public async Task<Result<List<(string path, string fileName)>>> GetFilesAsync(string path)
@@ -91,17 +99,25 @@ namespace InternIntelligence_Portfolio.Infrastructure.Services.Storage.Local
             return Result<List<(string path, string fileName)>>.Success(uploadedFiles);
         }
 
-        public async Task DeleteAllAsync(string path)
+        public async Task<Result<bool>> DeleteAllAsync(string path)
         {
-            DirectoryInfo di = new(GetFullPath(path));
-            if (di.Exists)
+            try
             {
-                foreach (FileInfo file in di.GetFiles())
+                DirectoryInfo di = new(GetFullPath(path));
+                if (di.Exists)
                 {
-                    file.Delete();
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        file.Delete();
+                    }
                 }
+
+                return await Task.FromResult(Result<bool>.Success(true));
             }
-            await Task.CompletedTask;
+            catch (Exception ex)
+            {
+                return Result<bool>.Failure(Error.UnexpectedError($"Unexpected error happened while deleting files: {ex.Message}"));
+            }
         }
 
         private string GetFullPath(string path, string? fileName = null)
