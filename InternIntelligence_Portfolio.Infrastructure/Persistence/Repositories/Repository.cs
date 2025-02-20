@@ -71,7 +71,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Repositories
             return query;
         }
 
-        public async Task<T?> GetByIdAsync(Guid id, bool isTracked = true, CancellationToken cancellationToken = default)
+        public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool isTracked = true)
         {
             var query = Table.AsQueryable();
 

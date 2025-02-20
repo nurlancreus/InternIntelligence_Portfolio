@@ -11,7 +11,7 @@ namespace InternIntelligence_Portfolio.Application.Abstractions.Repositories
         // Read
         IQueryable<T> GetAll(bool isTracked = true);
         IQueryable<T> GetAllWhere(Expression<Func<T, bool>> predicate, bool isTracked = true);
-        Task<T?> GetByIdAsync(Guid id, bool isTracked = true, CancellationToken cancellationToken = default);
+        Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool isTracked = true);
         Task<T?> GetWhereAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default, bool isTracked = true);
 
         // Write
