@@ -1,4 +1,7 @@
 ﻿using InternIntelligence_Portfolio.Application.Abstractions;
+using InternIntelligence_Portfolio.Application.Abstractions.Services;
+using InternIntelligence_Portfolio.Application.Abstractions.Services.Mail;
+using InternIntelligence_Portfolio.Application.Abstractions.Services.Sessions;
 using InternIntelligence_Portfolio.Application.Abstractions.Services.Storage;
 using InternIntelligence_Portfolio.Application.Abstractions.Services.Token;
 using InternIntelligence_Portfolio.Application.Options.Email;
@@ -6,6 +9,9 @@ using InternIntelligence_Portfolio.Application.Options.Token;
 using InternIntelligence_Portfolio.Domain.Entities.Identity;
 using InternIntelligence_Portfolio.Infrastructure.Persistence;
 using InternIntelligence_Portfolio.Infrastructure.Persistence.Context;
+using InternIntelligence_Portfolio.Infrastructure.Persistence.Services;
+using InternIntelligence_Portfolio.Infrastructure.Services.Mail;
+using InternIntelligence_Portfolio.Infrastructure.Services.Sessions;
 using InternIntelligence_Portfolio.Infrastructure.Services.Storage;
 using InternIntelligence_Portfolio.Infrastructure.Services.Storage.Local;
 using InternIntelligence_Portfolio.Infrastructure.Services.Token;
@@ -33,6 +39,8 @@ namespace InternIntelligence_Portfolio.API
                 .AddUserSecrets<Program>(); // Load User Secrets in ALL environments
 
             #endregion
+
+            builder.Services.AddHttpContextAccessor();
 
             // Add services to the container.
             builder.Services.AddAuthorization();
@@ -155,6 +163,16 @@ namespace InternIntelligence_Portfolio.API
 
             #region Register App Services
             builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
+            builder.Services.AddScoped<IJwtSession, JwtSession>();
+
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IContactService, ContactService>();
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IAchievementService, AchievementService>();
+            builder.Services.AddScoped<ISkillService, SkillService>();
 
             #region Storage Service
             builder.Services.AddScoped<IStorageService, StorageService>();
