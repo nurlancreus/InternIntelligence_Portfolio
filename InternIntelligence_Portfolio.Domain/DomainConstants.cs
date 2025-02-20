@@ -10,6 +10,8 @@
             public const int EmailMaxLength = 50;
 
             public const int BioMaxLength = 1000;
+
+            public const string UserProfilePictureContainerName = "profile-pictures";
         }
 
         public static class Contact
@@ -37,8 +39,10 @@
         {
             public const int NameMaxLength = 255;
             public const int DescriptionMaxLength = 1000;
+
+            public const string ProjectCoverImageContainerName = "cover-images";
         }
-        
+
         public static class Skill
         {
             public const int NameMaxLength = 255;
