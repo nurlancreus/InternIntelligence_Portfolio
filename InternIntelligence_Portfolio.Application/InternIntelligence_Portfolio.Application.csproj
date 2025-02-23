@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
     <PackageReference Include="MimeKit" Version="4.10.0" />
@@ -14,6 +15,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InternIntelligence_Portfolio.Domain\InternIntelligence_Portfolio.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Validators\Contact\" />
+    <Folder Include="Validators\Achivement\" />
+    <Folder Include="Validators\Skill\" />
+    <Folder Include="Validators\Project\" />
   </ItemGroup>
 
 </Project>
