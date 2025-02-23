@@ -52,7 +52,8 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshLoginRequest.RefreshToken, cancellationToken);
 
-            if (user is null) return Result<TokenDTO>.Failure(Error.NotFoundError("User is not found."));
+            if (user is null) 
+                return Result<TokenDTO>.Failure(Error.NotFoundError("User is not found."));
 
             var claimsPrincipalResult = _tokenService.GetPrincipalFromAccessToken(refreshLoginRequest.AccessToken);
 

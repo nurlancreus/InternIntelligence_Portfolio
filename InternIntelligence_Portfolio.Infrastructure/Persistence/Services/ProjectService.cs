@@ -26,10 +26,10 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             var isSuperAdminResult = _jwtSession.ValidateIfSuperAdmin();
             if (isSuperAdminResult.IsFailure) return Result<Guid>.Failure(isSuperAdminResult.Error);
 
-            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-
             var userIdResult = _jwtSession.GetUserId();
             if (userIdResult.IsFailure) return Result<Guid>.Failure(userIdResult.Error);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
             if (!UrlValidator.IsUrlValid(createProjectRequest.RepoUrl))
                 return Result<Guid>.Failure(Error.BadRequestError("Repo URL is not in the correct format."));
@@ -74,6 +74,8 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             if (project is null)
                 return Result<bool>.Failure(Error.NotFoundError("Project is not found."));
 
+            var oldCoverImageFile = project.CoverImageFile;
+
             var isDeleted = _projectRepository.Delete(project);
 
             var isSaved = await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -81,9 +83,9 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             if (!isDeleted || !isSaved)
                 return Result<bool>.Failure(Error.UnexpectedError("Project could not be deleted."));
 
-            if (project.CoverImageFile is not null)
+            if (oldCoverImageFile is not null)
             {
-                var deleteResult = await _storageService.DeleteAsync(DomainConstants.Project.ProjectCoverImageContainerName, project.CoverImageFile.Name);
+                var deleteResult = await _storageService.DeleteAsync(DomainConstants.Project.ProjectCoverImageContainerName, oldCoverImageFile.Name);
                 if (deleteResult.IsFailure)
                     return Result<bool>.Failure(deleteResult.Error);
             }

@@ -22,6 +22,9 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Configurations
 
             builder.Property(c => c.Message)
                 .HasMaxLength(DomainConstants.Contact.MessageMaxLength);
+
+            builder.Property(c => c.Subject)
+                .HasConversion<string>();
         }
     }
 }
