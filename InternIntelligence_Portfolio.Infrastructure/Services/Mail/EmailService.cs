@@ -1,6 +1,7 @@
 ﻿using InternIntelligence_Portfolio.Application.Abstractions.Services.Mail;
 using InternIntelligence_Portfolio.Application.DTOs.Mail;
 using InternIntelligence_Portfolio.Application.Options.Email;
+using InternIntelligence_Portfolio.Domain.Abstractions;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -12,7 +13,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Services.Mail
     {
         private readonly EmailSettings _emailConfig = emailSettings.Value;
 
-        public async Task SendBulkEmailAsync(IEnumerable<RecipientDetailsDTO> recipientsDetails, string subject, string body, CancellationToken cancellationToken = default)
+        public async Task<Result<bool>> SendBulkEmailAsync(IEnumerable<RecipientDetailsDTO> recipientsDetails, string subject, string body, CancellationToken cancellationToken = default)
         {
             var message = new MessageDTO
             {
@@ -22,10 +23,14 @@ namespace InternIntelligence_Portfolio.Infrastructure.Services.Mail
             };
 
             var emailMessage = CreateEmailMessage(message);
-            await SendAsync(emailMessage, cancellationToken);
+            var sendResult = await SendAsync(emailMessage, cancellationToken);
+
+            if (sendResult.IsFailure) return Result<bool>.Failure(sendResult.Error);
+
+            return Result<bool>.Success(true);
         }
 
-        public async Task SendEmailAsync(RecipientDetailsDTO recipientDetails, string subject, string body, CancellationToken cancellationToken = default)
+        public async Task<Result<bool>> SendEmailAsync(RecipientDetailsDTO recipientDetails, string subject, string body, CancellationToken cancellationToken = default)
         {
             var message = new MessageDTO
             {
@@ -35,7 +40,11 @@ namespace InternIntelligence_Portfolio.Infrastructure.Services.Mail
             };
 
             var emailMessage = CreateEmailMessage(message);
-            await SendAsync(emailMessage, cancellationToken);
+            var sendResult = await SendAsync(emailMessage, cancellationToken);
+
+            if (sendResult.IsFailure) return Result<bool>.Failure(sendResult.Error);
+
+            return Result<bool>.Success(true);
         }
 
         private MimeMessage CreateEmailMessage(MessageDTO message)
@@ -58,16 +67,24 @@ namespace InternIntelligence_Portfolio.Infrastructure.Services.Mail
             return emailMessage;
         }
 
-        private async Task SendAsync(MimeMessage mailMessage, CancellationToken cancellationToken = default)
+        private async Task<Result<bool>> SendAsync(MimeMessage mailMessage, CancellationToken cancellationToken = default)
         {
-            using var client = new SmtpClient();
+            try
+            {
+                using var client = new SmtpClient();
 
-            client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, SecureSocketOptions.StartTls);
-            client.AuthenticationMechanisms.Remove("XOAUTH2");
-            client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
+                client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, SecureSocketOptions.StartTls, cancellationToken);
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
+                client.Authenticate(_emailConfig.UserName, _emailConfig.Password, cancellationToken);
 
-            await client.SendAsync(mailMessage, cancellationToken);
+                await client.SendAsync(mailMessage, cancellationToken);
 
+                return Result<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Result<bool>.Failure(Error.UnexpectedError($"Unexpected Error happened while sending an email: {ex.Message}"));
+            }
         }
     }
 }
