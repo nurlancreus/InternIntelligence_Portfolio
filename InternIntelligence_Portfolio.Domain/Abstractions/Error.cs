@@ -8,11 +8,11 @@ namespace InternIntelligence_Portfolio.Domain.Abstractions
         public readonly ErrorType Type;
         public readonly string Message;
         public readonly HttpStatusCode StatusCode;
-        public readonly IEnumerable<KeyValuePair<string, string>> ValidationErrorMessages;
+        public readonly IEnumerable<KeyValuePair<string, string[]>> ValidationErrorMessages;
 
         public static readonly Error None = new(ErrorType.None, HttpStatusCode.OK, string.Empty);
 
-        private Error(ErrorType type, HttpStatusCode statusCode, string message, IEnumerable<KeyValuePair<string, string>>? validationErrors = null)
+        private Error(ErrorType type, HttpStatusCode statusCode, string message, IEnumerable<KeyValuePair<string, string[]>>? validationErrors = null)
         {
             Title = type.ToString();
             Type = type;
@@ -29,7 +29,7 @@ namespace InternIntelligence_Portfolio.Domain.Abstractions
         {
             return new(ErrorType.NotFound, HttpStatusCode.NotFound, message);
         }
-        public static Error ValidationError(string message = "Validation error happened", IEnumerable<KeyValuePair<string, string>>? validationErrors = null)
+        public static Error ValidationError(string message = "Validation error happened", IEnumerable<KeyValuePair<string, string[]>>? validationErrors = null)
         {
             return new(ErrorType.Validation, HttpStatusCode.BadRequest, message, validationErrors);
         }
