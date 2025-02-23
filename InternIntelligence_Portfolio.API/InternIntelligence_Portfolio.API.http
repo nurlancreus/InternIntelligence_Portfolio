@@ -1,6 +1,22 @@
-@InternIntelligence_Portfolio.API_HostAddress = http://localhost:5213
+@baseUrl = {{HostAddress}}
 
-GET {{InternIntelligence_Portfolio.API_HostAddress}}/weatherforecast/
-Accept: application/json
+### AUTH ENDPOINTS
 
-###
+### Login as Super Admin
+# @name loginSuperAdmin
+POST {{baseUrl}}/api/auth/login 
+Content-Type: application/json
+
+{
+  "UserName": "{{SuperAdminName}}",
+  "Password": "{{SuperAdminPassword}}"
+}
+
+### Refresh Login
+POST {{baseUrl}}/api/auth/refresh-login 
+Content-Type: application/json
+
+{
+  "AccessToken": "{{loginSuperAdmin.response.body.$.accessToken}}",
+  "RefreshToken": "{{loginSuperAdmin.response.body.$.refreshToken}}"
+}

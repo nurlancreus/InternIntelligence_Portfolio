@@ -1,4 +1,6 @@
-﻿using InternIntelligence_Portfolio.Application.Abstractions;
+﻿using FluentValidation.AspNetCore;
+using FluentValidation;
+using InternIntelligence_Portfolio.Application.Abstractions;
 using InternIntelligence_Portfolio.Application.Abstractions.Services;
 using InternIntelligence_Portfolio.Application.Abstractions.Services.Mail;
 using InternIntelligence_Portfolio.Application.Abstractions.Services.Sessions;
@@ -22,6 +24,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
+using InternIntelligence_Portfolio.Application.Validators.Auth;
+using InternIntelligence_Portfolio.Application.Validators;
+using InternIntelligence_Portfolio.Application.Decorators;
+using InternIntelligence_Portfolio.Infrastructure.Services.Mail.Templates;
+using InternIntelligence_Portfolio.Application.Abstractions.Services.Mail.Templates;
 
 namespace InternIntelligence_Portfolio.API
 {
@@ -157,13 +164,23 @@ namespace InternIntelligence_Portfolio.API
 
             #endregion
 
+            #region Register Fluent Validation
+            builder.Services
+             .AddFluentValidationClientsideAdapters()
+             .AddValidatorsFromAssemblyContaining<LoginRequestDTOValidator>();
+
+            builder.Services.AddSingleton<RequestValidator>();
+            #endregion
+
             #region Register App Interfaces
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             #endregion;
 
             #region Register App Services
             builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IContactEmailService, ContactEmailService>();
 
             builder.Services.AddScoped<IJwtSession, JwtSession>();
 
@@ -178,6 +195,10 @@ namespace InternIntelligence_Portfolio.API
             builder.Services.AddScoped<IStorageService, StorageService>();
 
             builder.Services.AddScoped<IStorage, LocalStorage>();
+            #endregion
+
+            #region Register Decorators
+            builder.Services.Decorate<IAuthService, AuthServiceValidationDecorator>();
             #endregion
             #endregion;
 
