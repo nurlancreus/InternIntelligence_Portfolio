@@ -9,7 +9,7 @@ namespace InternIntelligence_Portfolio.Application.Validators
     {
         private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
 
-        public async Task<Result<T>> ValidateAsync<T>(T request) where T : IValidatableRequest
+        public async Task<Result<T>> ValidateAsync<T>(T request, CancellationToken cancellationToken = default) where T : IValidatableRequest
         {
             var requestType = request.GetType();
             var validatorType = typeof(IValidator<>).MakeGenericType(requestType);
@@ -21,7 +21,7 @@ namespace InternIntelligence_Portfolio.Application.Validators
             if (scopedProvider.GetService(validatorType) is not IValidator<T> validator)
                 return Result<T>.Success(request);
 
-            var validationResult = await validator.ValidateAsync(request);
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var validationErrors = validationResult.Errors

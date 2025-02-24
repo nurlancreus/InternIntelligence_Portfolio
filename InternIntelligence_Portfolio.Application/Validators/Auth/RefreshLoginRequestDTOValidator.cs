@@ -8,10 +8,12 @@ namespace InternIntelligence_Portfolio.Application.Validators.Auth
         public RefreshLoginRequestDTOValidator()
         {
             RuleFor(x => x.AccessToken)
-                .NotEmpty().WithMessage("AccessToken is required.");
+                .NotEmpty()
+                    .WithMessage("AccessToken is required.");
 
             RuleFor(x => x.RefreshToken)
-                .NotEmpty().WithMessage("RefreshToken is required.");
+                .NotEmpty()
+                    .WithMessage("RefreshToken is required.");
         }
     }
 }

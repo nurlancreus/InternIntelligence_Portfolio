@@ -10,18 +10,28 @@ namespace InternIntelligence_Portfolio.Application.Validators.Auth
         public LoginRequestDTOValidator()
         {
             RuleFor(x => x.UserName)
-                .NotEmpty().WithMessage("Username is required.")
-                .MaximumLength(DomainConstants.User.UserNameMaxLength).WithMessage($"Username cannot exceed {DomainConstants.User.UserNameMaxLength} characters.");
+                .NotEmpty()
+                    .WithMessage("Username is required.")
+                .MaximumLength(DomainConstants.User.UserNameMaxLength)
+                    .WithMessage($"Username cannot exceed {DomainConstants.User.UserNameMaxLength} characters.");
 
             RuleFor(x => x.Password)
-                 .NotEmpty().WithMessage("Password is required.")
-                 .MinimumLength(12).WithMessage("Password must be at least 12 characters long.")
-                 .MaximumLength(100).WithMessage("Password cannot exceed 100 characters.")
-                 .Must(RequireDigit).WithMessage("Password must contain at least one digit.")
-                 .Must(RequireLowercase).WithMessage("Password must contain at least one lowercase letter.")
-                 .Must(RequireUppercase).WithMessage("Password must contain at least one uppercase letter.")
-                 .Must(RequireNonAlphanumeric).WithMessage("Password must contain at least one non-alphanumeric character.")
-                 .Must(RequireUniqueChars).WithMessage("Password must contain at least one unique character.");
+                 .NotEmpty()
+                    .WithMessage("Password is required.")
+                 .MinimumLength(12)
+                    .WithMessage("Password must be at least 12 characters long.")
+                 .MaximumLength(100)
+                    .WithMessage("Password cannot exceed 100 characters.")
+                 .Must(RequireDigit)
+                    .WithMessage("Password must contain at least one digit.")
+                 .Must(RequireLowercase)
+                    .WithMessage("Password must contain at least one lowercase letter.")
+                 .Must(RequireUppercase)
+                    .WithMessage("Password must contain at least one uppercase letter.")
+                 .Must(RequireNonAlphanumeric)
+                    .WithMessage("Password must contain at least one non-alphanumeric character.")
+                 .Must(RequireUniqueChars)
+                    .WithMessage("Password must contain at least one unique character.");
         }
 
         private bool RequireDigit(string password)
