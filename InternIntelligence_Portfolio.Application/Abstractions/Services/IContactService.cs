@@ -9,6 +9,6 @@ namespace InternIntelligence_Portfolio.Application.Abstractions.Services
         Task<Result<GetContactResponseDTO>> GetAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Result<Guid>> CreateAsync(CreateContactRequestDTO createContactRequest, CancellationToken cancellationToken = default);
         Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
-        Task<Result<bool>> AnswerAsync(AnswerContactRequestDTO answerContactRequest, CancellationToken cancellationToken = default);
+        Task<Result<bool>> AnswerAsync(Guid id, AnswerContactRequestDTO answerContactRequest, CancellationToken cancellationToken = default);
     }
 }

@@ -38,14 +38,14 @@ namespace InternIntelligence_Portfolio.Application.Decorators
 
         }
 
-        public async Task<Result<Guid>> UpdateAsync(UpdateSkillRequestDTO request, CancellationToken cancellationToken = default)
+        public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateSkillRequestDTO request, CancellationToken cancellationToken = default)
         {
             var validationResult = await _requestValidator.ValidateAsync(request, cancellationToken);
 
             if (validationResult.IsFailure)
                 return Result<Guid>.Failure(validationResult.Error);
 
-            return await _innerSkillService.UpdateAsync(request, cancellationToken);
+            return await _innerSkillService.UpdateAsync(id, request, cancellationToken);
         }
     }
 }

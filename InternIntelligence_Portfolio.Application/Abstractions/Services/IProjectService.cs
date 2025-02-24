@@ -8,7 +8,7 @@ namespace InternIntelligence_Portfolio.Application.Abstractions.Services
         Task<Result<IEnumerable<GetProjectResponseDTO>>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<Result<GetProjectResponseDTO>> GetAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Result<Guid>> CreateAsync(CreateProjectRequestDTO createProjectRequest, CancellationToken cancellationToken = default);
-        Task<Result<Guid>> UpdateAsync(UpdateProjectRequestDTO updateProjectRequest, CancellationToken cancellationToken = default);
+        Task<Result<Guid>> UpdateAsync(Guid id, UpdateProjectRequestDTO updateProjectRequest, CancellationToken cancellationToken = default);
         Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

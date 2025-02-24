@@ -10,13 +10,13 @@ namespace InternIntelligence_Portfolio.Application.Decorators
         private readonly IContactService _innerContactService = innerContactService;
         private readonly RequestValidator _requestValidator = requestValidator;
 
-        public async Task<Result<bool>> AnswerAsync(AnswerContactRequestDTO request, CancellationToken cancellationToken = default)
+        public async Task<Result<bool>> AnswerAsync(Guid id, AnswerContactRequestDTO request, CancellationToken cancellationToken = default)
         {
             var validationResult = await _requestValidator.ValidateAsync(request, cancellationToken);
             if (validationResult.IsFailure)
                 return Result<bool>.Failure(validationResult.Error);
 
-            return await _innerContactService.AnswerAsync(request, cancellationToken);
+            return await _innerContactService.AnswerAsync(id, request, cancellationToken);
         }
 
         public async Task<Result<Guid>> CreateAsync(CreateContactRequestDTO request, CancellationToken cancellationToken = default)

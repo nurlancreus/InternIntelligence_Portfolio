@@ -9,21 +9,8 @@ namespace InternIntelligence_Portfolio.Application.Validators.Contact
 {
     public class AnswerContactRequestDTOValidator : AbstractValidator<AnswerContactRequestDTO>
     {
-        private readonly IRepository<ContactEntity> _contactRepository;
-        public AnswerContactRequestDTOValidator(IUnitOfWork unitOfWork)
+        public AnswerContactRequestDTOValidator()
         {
-            _contactRepository = unitOfWork.GetRepository<ContactEntity>();
-
-            RuleFor(x => x.ContactId)
-                .NotEmpty()
-                    .WithMessage("Contact id is required.")
-                .MustAsync(async (id, cancellationToken) =>
-                {
-                    var contact = await _contactRepository.GetByIdAsync(id, cancellationToken);
-
-                    return contact != null;
-                })
-                    .WithMessage("Contact is not found.");
 
             RuleFor(x => x.Message)
                 .NotEmpty()
