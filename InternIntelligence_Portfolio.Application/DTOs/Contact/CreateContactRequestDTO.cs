@@ -1,6 +1,8 @@
-﻿namespace InternIntelligence_Portfolio.Application.DTOs.Contact
+﻿using InternIntelligence_Portfolio.Application.Abstractions;
+
+namespace InternIntelligence_Portfolio.Application.DTOs.Contact
 {
-    public record CreateContactRequestDTO
+    public record CreateContactRequestDTO : IValidatableRequest
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

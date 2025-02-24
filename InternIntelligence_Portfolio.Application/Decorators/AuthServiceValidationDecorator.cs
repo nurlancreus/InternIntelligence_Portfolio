@@ -6,21 +6,15 @@ using InternIntelligence_Portfolio.Domain.Abstractions;
 
 namespace InternIntelligence_Portfolio.Application.Decorators
 {
-    public class AuthServiceValidationDecorator : IAuthService
+    public class AuthServiceValidationDecorator(IAuthService innerAuthService, RequestValidator requestValidator) : IAuthService
     {
-        private readonly IAuthService _innerAuthService;
-        private readonly RequestValidator _requestValidator;
-
-        public AuthServiceValidationDecorator(IAuthService innerAuthService, RequestValidator requestValidator)
-        {
-            _innerAuthService = innerAuthService;
-            _requestValidator = requestValidator;
-        }
+        private readonly IAuthService _innerAuthService = innerAuthService;
+        private readonly RequestValidator _requestValidator = requestValidator;
 
         public async Task<Result<TokenDTO>> LoginAsync(LoginRequestDTO request, CancellationToken cancellationToken = default)
         {
-            var validationResult = await _requestValidator.ValidateAsync(request);
-            if (!validationResult.IsSuccess)
+            var validationResult = await _requestValidator.ValidateAsync(request, cancellationToken);
+            if (validationResult.IsFailure)
                 return Result<TokenDTO>.Failure(validationResult.Error);
 
             return await _innerAuthService.LoginAsync(request, cancellationToken);
@@ -28,8 +22,8 @@ namespace InternIntelligence_Portfolio.Application.Decorators
 
         public async Task<Result<TokenDTO>> RefreshLoginAsync(RefreshLoginRequestDTO request, CancellationToken cancellationToken = default)
         {
-            var validationResult = await _requestValidator.ValidateAsync(request);
-            if (!validationResult.IsSuccess)
+            var validationResult = await _requestValidator.ValidateAsync(request, cancellationToken);
+            if (validationResult.IsFailure)
                 return Result<TokenDTO>.Failure(validationResult.Error);
 
             return await _innerAuthService.RefreshLoginAsync(request, cancellationToken);

@@ -1,6 +1,8 @@
-﻿namespace InternIntelligence_Portfolio.Application.DTOs.Skill
+﻿using InternIntelligence_Portfolio.Application.Abstractions;
+
+namespace InternIntelligence_Portfolio.Application.DTOs.Skill
 {
-    public record CreateSkillRequestDTO
+    public record CreateSkillRequestDTO : IValidatableRequest
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

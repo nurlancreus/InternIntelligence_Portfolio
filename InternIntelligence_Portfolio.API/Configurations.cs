@@ -199,6 +199,11 @@ namespace InternIntelligence_Portfolio.API
 
             #region Register Decorators
             builder.Services.Decorate<IAuthService, AuthServiceValidationDecorator>();
+            builder.Services.Decorate<IUserService, UserServiceValidationDecorator>();
+            builder.Services.Decorate<IProjectService, ProjectServiceValidationDecorator>();
+            builder.Services.Decorate<ISkillService, SkillServiceValidationDecorator>();
+            builder.Services.Decorate<IAchievementService, AchievementServiceValidationDecorator>();
+            builder.Services.Decorate<IContactService, ContactServiceValidationDecorator>();
             #endregion
             #endregion;
 

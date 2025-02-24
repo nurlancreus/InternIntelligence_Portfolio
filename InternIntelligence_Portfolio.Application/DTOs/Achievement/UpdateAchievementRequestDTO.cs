@@ -1,6 +1,8 @@
-﻿namespace InternIntelligence_Portfolio.Application.DTOs.Achievement
+﻿using InternIntelligence_Portfolio.Application.Abstractions;
+
+namespace InternIntelligence_Portfolio.Application.DTOs.Achievement
 {
-    public record UpdateAchievementRequestDTO
+    public record UpdateAchievementRequestDTO : IValidatableRequest
     {
         public Guid Id { get; set; }
         public string? Title { get; set; }

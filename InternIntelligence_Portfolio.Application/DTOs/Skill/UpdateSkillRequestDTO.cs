@@ -1,6 +1,8 @@
-﻿namespace InternIntelligence_Portfolio.Application.DTOs.Skill
+﻿using InternIntelligence_Portfolio.Application.Abstractions;
+
+namespace InternIntelligence_Portfolio.Application.DTOs.Skill
 {
-    public record UpdateSkillRequestDTO
+    public record UpdateSkillRequestDTO : IValidatableRequest
     {
         public Guid Id { get; set; }
         public string? Name { get; set; } 

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using InternIntelligence_Portfolio.Application.Abstractions;
+using Microsoft.AspNetCore.Http;
 
 namespace InternIntelligence_Portfolio.Application.DTOs.Project
 {
-    public record UpdateProjectRequestDTO
+    public record UpdateProjectRequestDTO : IValidatableRequest
     {
         public Guid Id { get; set; }
         public string? Name { get; set; } 
