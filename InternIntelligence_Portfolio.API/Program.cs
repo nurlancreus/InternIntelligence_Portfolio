@@ -24,7 +24,13 @@ namespace InternIntelligence_Portfolio.API
             }
             #endregion
 
-            app.RegisterAuthEndpoints();
+            app.RegisterAuthEndpoints()
+               .RegisterUserEndpoints()
+               .RegisterProjectEndpoints()
+               .RegisterAchievementEndpoints()
+               .RegisterSkillEndpoints()
+               .RegisterContactEndpoints();
+               
 
             app.Run();
         }

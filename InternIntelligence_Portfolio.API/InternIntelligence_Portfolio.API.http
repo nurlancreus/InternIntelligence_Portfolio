@@ -20,3 +20,48 @@ Content-Type: application/json
   "AccessToken": "{{loginSuperAdmin.response.body.$.accessToken}}",
   "RefreshToken": "{{loginSuperAdmin.response.body.$.refreshToken}}"
 }
+
+
+### User ENDPOINTS
+
+### Get Me
+GET {{baseUrl}}/api/users/me
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Skill ENDPOINTS
+
+### Get skills
+GET {{baseUrl}}/api/skills
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Get skill by id
+GET {{baseUrl}}/api/skills/c5758570-8549-4a0f-add2-08dd54d890b7
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Create a new skill
+POST {{baseUrl}}/api/skills
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+ "Name": "Backend",
+ "Description": "I love C#",
+ "ProficiencyLevel": "Advanced",
+ "YearsOfExperience": "3"
+}
+
+### Update a skill
+PATCH {{baseUrl}}/api/skills/c5758570-8549-4a0f-add2-08dd54d890b7
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+ "Name": "Backend",
+ "Description": "I love C#",
+ "ProficiencyLevel": "Advanced",
+ "YearsOfExperience": "5"
+}
+
+### Delete a skill by Id
+DELETE {{baseUrl}}/api/skills/95540373-ae4f-4233-ddbe-08dd54d77808
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
