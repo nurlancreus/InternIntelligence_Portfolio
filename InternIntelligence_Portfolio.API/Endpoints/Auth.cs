@@ -10,18 +10,18 @@ namespace InternIntelligence_Portfolio.API.Endpoints
         {
             var auth = routes.MapGroup("api/auth").AllowAnonymous();
 
-            auth.MapPost("login", async (IAuthService authService, HttpContext context, [FromBody] LoginRequestDTO request) =>
+            auth.MapPost("login", async (IAuthService authService, HttpContext context, [FromBody] LoginRequestDTO request, CancellationToken cancellationToken = default) =>
             {
-                var result = await authService.LoginAsync(request);
+                var result = await authService.LoginAsync(request, cancellationToken);
 
                 return result.Match(
                     (value) => Results.Ok(value),
                     (error) => error.HandleError(context));
             });
 
-            auth.MapPost("refresh-login", async (IAuthService authService, HttpContext context, [FromBody] RefreshLoginRequestDTO request) =>
+            auth.MapPost("refresh-login", async (IAuthService authService, HttpContext context, [FromBody] RefreshLoginRequestDTO request, CancellationToken cancellationToken = default) =>
             {
-                var result = await authService.RefreshLoginAsync(request);
+                var result = await authService.RefreshLoginAsync(request, cancellationToken);
 
                 return result.Match(
                     (value) => Results.Ok(value),
