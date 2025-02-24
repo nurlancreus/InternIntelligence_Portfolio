@@ -17,11 +17,4 @@
     <ProjectReference Include="..\InternIntelligence_Portfolio.Domain\InternIntelligence_Portfolio.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validators\Contact\" />
-    <Folder Include="Validators\Achivement\" />
-    <Folder Include="Validators\Skill\" />
-    <Folder Include="Validators\Project\" />
-  </ItemGroup>
-
 </Project>
