@@ -12,6 +12,7 @@
             public const int BioMaxLength = 1000;
 
             public const string UserProfilePictureContainerName = "profile-pictures";
+            public const int UserProfilePictureMaxSizeInMb = 2;
         }
 
         public static class Contact
@@ -41,6 +42,8 @@
             public const int DescriptionMaxLength = 1000;
 
             public const string ProjectCoverImageContainerName = "cover-images";
+            public const int ProjectCoverImageMaxSizeInMb = 3;
+
         }
 
         public static class Skill
