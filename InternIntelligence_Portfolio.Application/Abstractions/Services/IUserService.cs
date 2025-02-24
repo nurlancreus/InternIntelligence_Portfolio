@@ -8,6 +8,6 @@ namespace InternIntelligence_Portfolio.Application.Abstractions.Services
     {
         Task<Result<GetUserResponseDTO>> GetMeAsync(CancellationToken cancellationToken = default);
         Task<Result<bool>> ChangeProfilePictureAsync(ChangeProfilePictureRequestDTO changeProfilePictureRequest, CancellationToken cancellationToken = default);
-        Task<Result<bool>> UpdateUserRefreshToken(ApplicationUser user, string refreshToken, DateTime accessTokenEndDate);
+        Task<Result<bool>> UpdateUserRefreshTokenAsync(ApplicationUser user, string refreshToken, DateTime accessTokenEndDate);
     }
 }

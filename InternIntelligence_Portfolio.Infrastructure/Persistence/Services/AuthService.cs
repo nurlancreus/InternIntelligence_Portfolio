@@ -41,7 +41,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 
             var token = tokenResult.Value;
 
-            var updateRefreshTokenResult = await _userService.UpdateUserRefreshToken(user, token.RefreshToken, token.AccessTokenEndDate);
+            var updateRefreshTokenResult = await _userService.UpdateUserRefreshTokenAsync(user, token.RefreshToken, token.AccessTokenEndDate);
 
             if (updateRefreshTokenResult.IsFailure) return Result<TokenDTO>.Failure(updateRefreshTokenResult.Error);
 
@@ -73,7 +73,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 
             var newRefreshToken = _tokenService.GenerateRefreshToken();
 
-            var updateRefreshTokenResult = await _userService.UpdateUserRefreshToken(user, newRefreshToken, tokenEndDate);
+            var updateRefreshTokenResult = await _userService.UpdateUserRefreshTokenAsync(user, newRefreshToken, tokenEndDate);
 
             if (updateRefreshTokenResult.IsFailure) return Result<TokenDTO>.Failure(updateRefreshTokenResult.Error);
 

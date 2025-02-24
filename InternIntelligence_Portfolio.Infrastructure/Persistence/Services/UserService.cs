@@ -83,7 +83,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             return Result<GetUserResponseDTO>.Success(new GetUserResponseDTO(user));
         }
 
-        public async Task<Result<bool>> UpdateUserRefreshToken(ApplicationUser user, string refreshToken, DateTime accessTokenEndDate)
+        public async Task<Result<bool>> UpdateUserRefreshTokenAsync(ApplicationUser user, string refreshToken, DateTime accessTokenEndDate)
         {
             user.RefreshToken = refreshToken;
             user.RefreshTokenEndDate = accessTokenEndDate.AddMinutes(_refreshSettings.RefreshTokenLifeTimeInMinutes);
