@@ -19,12 +19,12 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
         private readonly IRepository<Contact> _contactRepository = unitOfWork.GetRepository<Contact>();
         private readonly IContactEmailService _contactEmailService = contactEmailService;
 
-        public async Task<Result<bool>> AnswerAsync(AnswerContactRequestDTO answerContactRequest, CancellationToken cancellationToken = default)
+        public async Task<Result<bool>> AnswerAsync(Guid id, AnswerContactRequestDTO answerContactRequest, CancellationToken cancellationToken = default)
         {
             var isSuperAdminResult = _jwtSession.ValidateIfSuperAdmin();
             if (isSuperAdminResult.IsFailure) return Result<bool>.Failure(isSuperAdminResult.Error);
 
-            var contact = await _contactRepository.GetByIdAsync(answerContactRequest.ContactId, cancellationToken);
+            var contact = await _contactRepository.GetByIdAsync(id, cancellationToken);
 
             if (contact is null)
                 return Result<bool>.Failure(Error.NotFoundError("Contact is not found."));

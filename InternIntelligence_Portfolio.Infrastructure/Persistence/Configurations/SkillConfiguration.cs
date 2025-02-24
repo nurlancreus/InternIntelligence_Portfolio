@@ -19,6 +19,8 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Configurations
 
             builder.Property(s => s.ProficiencyLevel)
                 .HasConversion<string>();
+
+            builder.HasIndex(s => s.Name).IsUnique();
         }
     }
 }

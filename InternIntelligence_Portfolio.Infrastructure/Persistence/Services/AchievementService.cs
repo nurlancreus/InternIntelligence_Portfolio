@@ -95,14 +95,14 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             return Result<GetAchievementResponseDTO>.Success(achievementDto);
         }
 
-        public async Task<Result<Guid>> UpdateAsync(UpdateAchievementRequestDTO updateAchievementRequest, CancellationToken cancellationToken = default)
+        public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateAchievementRequestDTO updateAchievementRequest, CancellationToken cancellationToken = default)
         {
             var isSuperAdminResult = _jwtSession.ValidateIfSuperAdmin();
             if (isSuperAdminResult.IsFailure) return Result<Guid>.Failure(isSuperAdminResult.Error);
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            var achievement = await _achievementRepository.GetByIdAsync(updateAchievementRequest.Id, cancellationToken);
+            var achievement = await _achievementRepository.GetByIdAsync(id, cancellationToken);
             if (achievement is null)
                 return Result<Guid>.Failure(Error.NotFoundError("Achievement is not found."));
 
@@ -121,9 +121,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
                 achievement.AchievedAt = updateAchievementRequest.AchievedAt.Value;
             }
 
-            var isSaved = await _unitOfWork.SaveChangesAsync(cancellationToken);
-            if (!isSaved)
-                return Result<Guid>.Failure(Error.UnexpectedError("Achievement could not be updated."));
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             scope.Complete();
             return Result<Guid>.Success(achievement.Id);

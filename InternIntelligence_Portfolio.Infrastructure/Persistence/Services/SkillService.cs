@@ -33,6 +33,11 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
                 return Result<Guid>.Failure(Error.BadRequestError("Invalid proficiency"));
             }
 
+            var existedSkill = await _skillRepository.GetWhereAsync(s => s.Name.ToLower() == createSkillRequest.Name.ToLower(), cancellationToken);
+
+            if (existedSkill != null)
+                return Result<Guid>.Failure(Error.ConflictError($"Skill '{existedSkill.Name}' already exists."));
+
             var skill = Skill.Create(createSkillRequest.Name, createSkillRequest.Description, proficiency, createSkillRequest.YearsOfExperience);
             skill.UserId = userIdResult.Value;
 
@@ -93,20 +98,26 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             return Result<GetSkillResponseDTO>.Success(skillDto);
         }
 
-        public async Task<Result<Guid>> UpdateAsync(UpdateSkillRequestDTO updateSkillRequest, CancellationToken cancellationToken = default)
+        public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateSkillRequestDTO updateSkillRequest, CancellationToken cancellationToken = default)
         {
             var isSuperAdminResult = _jwtSession.ValidateIfSuperAdmin();
-            if (isSuperAdminResult.IsFailure) return Result<Guid>.Failure(isSuperAdminResult.Error);
+            if (isSuperAdminResult.IsFailure) 
+                return Result<Guid>.Failure(isSuperAdminResult.Error);
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            var skill = await _skillRepository.GetByIdAsync(updateSkillRequest.Id, cancellationToken);
+            var skill = await _skillRepository.GetByIdAsync(id, cancellationToken);
             if (skill is null)
                 return Result<Guid>.Failure(Error.NotFoundError("Skill is not found."));
 
             if (!string.IsNullOrEmpty(updateSkillRequest.Name) && skill.Name != updateSkillRequest.Name)
             {
                 skill.Name = updateSkillRequest.Name;
+
+                var existedSkill = await _skillRepository.GetWhereAsync(s => s.Name.ToLower() == updateSkillRequest.Name.ToLower(), cancellationToken);
+
+                if (existedSkill != null) 
+                    return Result<Guid>.Failure(Error.ConflictError($"Skill '{existedSkill.Name}' already exists."));
             }
 
             if (!string.IsNullOrEmpty(updateSkillRequest.Description) && skill.Description != updateSkillRequest.Description)
@@ -124,9 +135,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
                 skill.YearsOfExperience = updateSkillRequest.YearsOfExperience.Value;
             }
 
-            var isSaved = await _unitOfWork.SaveChangesAsync(cancellationToken);
-            if (!isSaved)
-                return Result<Guid>.Failure(Error.UnexpectedError("Skill could not be updated."));
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             scope.Complete();
             return Result<Guid>.Success(skill.Id);

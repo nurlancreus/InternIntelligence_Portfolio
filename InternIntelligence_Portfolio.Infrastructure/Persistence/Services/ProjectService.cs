@@ -127,14 +127,15 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             return Result<GetProjectResponseDTO>.Success(projectDto);
         }
 
-        public async Task<Result<Guid>> UpdateAsync(UpdateProjectRequestDTO updateProjectRequest, CancellationToken cancellationToken = default)
+        public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateProjectRequestDTO updateProjectRequest, CancellationToken cancellationToken = default)
         {
             var isSuperAdminResult = _jwtSession.ValidateIfSuperAdmin();
-            if (isSuperAdminResult.IsFailure) return Result<Guid>.Failure(isSuperAdminResult.Error);
+            if (isSuperAdminResult.IsFailure) 
+                return Result<Guid>.Failure(isSuperAdminResult.Error);
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            var project = await _projectRepository.GetByIdAsync(updateProjectRequest.Id, cancellationToken);
+            var project = await _projectRepository.GetByIdAsync(id, cancellationToken);
             if (project is null)
                 return Result<Guid>.Failure(Error.NotFoundError("Project is not found."));
 
@@ -179,10 +180,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
                 project.CoverImageFile = coverPhoto;
             }
 
-            var isSaved = await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            if (!isSaved)
-                return Result<Guid>.Failure(Error.UnexpectedError("Project could not be updated."));
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             if (oldCoverPhotoFile is not null)
             {
