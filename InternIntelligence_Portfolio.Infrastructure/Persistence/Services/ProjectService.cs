@@ -20,6 +20,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
         private readonly IJwtSession _jwtSession = jwtSession;
         private readonly IStorageService _storageService = storageService;
         private readonly IRepository<Project> _projectRepository = unitOfWork.GetRepository<Project>();
+        private readonly IRepository<ApplicationFile> _fileRepository = unitOfWork.GetRepository<ApplicationFile>();
 
         public async Task<Result<Guid>> CreateAsync(CreateProjectRequestDTO createProjectRequest, CancellationToken cancellationToken = default)
         {
@@ -97,7 +98,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
         public async Task<Result<IEnumerable<GetProjectResponseDTO>>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var isSuperAdminResult = _jwtSession.ValidateIfSuperAdmin();
-            if (isSuperAdminResult.IsFailure) 
+            if (isSuperAdminResult.IsFailure)
                 return Result<IEnumerable<GetProjectResponseDTO>>.Failure(isSuperAdminResult.Error);
 
             var projects = _projectRepository.Table
@@ -130,12 +131,14 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
         public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateProjectRequestDTO updateProjectRequest, CancellationToken cancellationToken = default)
         {
             var isSuperAdminResult = _jwtSession.ValidateIfSuperAdmin();
-            if (isSuperAdminResult.IsFailure) 
+            if (isSuperAdminResult.IsFailure)
                 return Result<Guid>.Failure(isSuperAdminResult.Error);
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            var project = await _projectRepository.GetByIdAsync(id, cancellationToken);
+            var project = await _projectRepository.Table
+                                    .Include(p => p.CoverImageFile)
+                                    .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
             if (project is null)
                 return Result<Guid>.Failure(Error.NotFoundError("Project is not found."));
 
@@ -166,6 +169,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             }
 
             ProjectCoverImageFile? oldCoverPhotoFile = null;
+            bool fileUpdated = false;
 
             if (updateProjectRequest.ProjectCoverImageFile is not null)
             {
@@ -178,11 +182,14 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
                 var (path, fileName) = uploadResult.Value;
                 var coverPhoto = ProjectCoverImageFile.Create(fileName, path, _storageService.StorageName);
                 project.CoverImageFile = coverPhoto;
+
+                if (oldCoverPhotoFile is not null) _fileRepository.Delete(oldCoverPhotoFile);
+                fileUpdated = true;
             }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            if (oldCoverPhotoFile is not null)
+            if (oldCoverPhotoFile is not null && fileUpdated)
             {
                 var deleteResult = await _storageService.DeleteAsync(DomainConstants.Project.ProjectCoverImageContainerName, oldCoverPhotoFile.Name);
 

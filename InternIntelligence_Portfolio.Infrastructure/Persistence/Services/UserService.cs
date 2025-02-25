@@ -1,4 +1,6 @@
-﻿using InternIntelligence_Portfolio.Application.Abstractions.Services;
+﻿using InternIntelligence_Portfolio.Application.Abstractions;
+using InternIntelligence_Portfolio.Application.Abstractions.Repositories;
+using InternIntelligence_Portfolio.Application.Abstractions.Services;
 using InternIntelligence_Portfolio.Application.Abstractions.Services.Sessions;
 using InternIntelligence_Portfolio.Application.Abstractions.Services.Storage;
 using InternIntelligence_Portfolio.Application.DTOs.User;
@@ -15,11 +17,12 @@ using System.Transactions;
 
 namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 {
-    public class UserService(UserManager<ApplicationUser> userManager, IOptions<TokenSettings> options, IJwtSession jwtSession, IStorageService storageService) : IUserService
+    public class UserService(UserManager<ApplicationUser> userManager, IOptions<TokenSettings> options, IJwtSession jwtSession, IUnitOfWork unitOfWork, IStorageService storageService) : IUserService
     {
         private readonly IJwtSession _jwtSession = jwtSession;
         private readonly IStorageService _storageService = storageService;
         private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly IRepository<ApplicationFile> _fileRepository = unitOfWork.GetRepository<ApplicationFile>();
         private readonly RefreshSettings _refreshSettings = options.Value.Refresh;
 
         public async Task<Result<bool>> ChangeProfilePictureAsync(ChangeProfilePictureRequestDTO changeProfilePictureRequest, CancellationToken cancellationToken = default)
@@ -32,7 +35,6 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 
             var user = await _userManager.Users
                                 .Include(u => u.ProfilePictureFile)
-                                .AsNoTracking()
                                 .FirstOrDefaultAsync(u => u.Id == userIdResult.Value, cancellationToken);
 
             if (user is null) return Result<bool>.Failure(Error.NotFoundError("User is not found."));
@@ -49,9 +51,13 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 
             user.ProfilePictureFile = newPictureFile;
 
+            if (oldProfilePhotoFile is not null)
+                _fileRepository.Delete(oldProfilePhotoFile);
+
             var updateResult = await _userManager.UpdateAsync(user);
 
-            if (!updateResult.Succeeded) return Result<bool>.Failure(Error.UnexpectedError($"Unexpected error happened while updating user: {ResponseHelpers.GetResultErrorsMessage(updateResult)}"));
+            if (!updateResult.Succeeded)
+                return Result<bool>.Failure(Error.UnexpectedError($"Unexpected error happened while updating user: {ResponseHelpers.GetResultErrorsMessage(updateResult)}"));
 
             if (oldProfilePhotoFile is not null)
             {

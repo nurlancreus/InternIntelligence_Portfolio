@@ -45,6 +45,8 @@ namespace InternIntelligence_Portfolio.Infrastructure.Services.Storage.Local
         public async Task<Result<(string path, string fileName)>> UploadAsync(string path, IFormFile formFile)
         {
             string uploadPath = GetFullPath(path);
+            FileHelpers.EnsureDirectoryExists(uploadPath);
+
             string newFileName = await FileHelpers.RenameFileAsync(path, formFile.FileName, HasFileAsync);
 
             string fullPath = Path.Combine(uploadPath, newFileName);

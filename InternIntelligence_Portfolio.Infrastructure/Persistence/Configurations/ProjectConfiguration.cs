@@ -22,6 +22,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Configurations
                 .HasOne(p => p.CoverImageFile)
                 .WithOne(ci => ci.Project)
                 .HasForeignKey<ProjectCoverImageFile>(ci => ci.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(false);
         }
     }
