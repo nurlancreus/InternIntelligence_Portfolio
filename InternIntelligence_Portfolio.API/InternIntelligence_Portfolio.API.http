@@ -13,6 +13,7 @@ Content-Type: application/json
 }
 
 ### Refresh Login
+# @name loginSuperAdmin
 POST {{baseUrl}}/api/auth/refresh-login 
 Content-Type: application/json
 
@@ -27,6 +28,18 @@ Content-Type: application/json
 ### Get Me
 GET {{baseUrl}}/api/users/me
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Change profile picture
+PATCH {{baseUrl}}/api/users/change-picture
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="NewProfilePictureFile"; filename="profile-2.jpg"
+Content-Type: image/jpeg
+
+< ../images/profile-pictures/profile-2.jpg
+--boundary--
 
 ### Skill ENDPOINTS
 
@@ -64,4 +77,110 @@ Content-Type: application/json
 
 ### Delete a skill by Id
 DELETE {{baseUrl}}/api/skills/95540373-ae4f-4233-ddbe-08dd54d77808
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### ACHIEVEMENT ENDPOINTS
+
+### Get all achievements
+GET {{baseUrl}}/api/achievements
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Get achievement by ID
+GET {{baseUrl}}/api/achievements/d76363f2-912d-4e42-1d9c-08dd558aba56
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Create a new achievement
+POST {{baseUrl}}/api/achievements
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "Title": "Completed AI Project",
+  "Description": "Successfully built and deployed an AI model.",
+  "AchievedAt": "2024-02-25T00:00:00Z"
+}
+
+### Update an achievement
+PATCH {{baseUrl}}/api/achievements/d76363f2-912d-4e42-1d9c-08dd558aba56
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "Title": "Completed Advanced AI Project",
+  "Description": "Enhanced AI model with better accuracy.",
+  "AchievedAt": "2024-03-10T00:00:00Z"
+}
+
+### Delete an achievement by ID
+DELETE {{baseUrl}}/api/achievements/08d549ee-b9f0-4510-1d9e-08dd558aba56
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### PROJECT ENDPOINTS
+
+### Get all projects
+GET {{baseUrl}}/api/projects
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Get a project by Id
+GET {{baseUrl}}/api/projects/123e082e-59eb-463b-731a-08dd5597d590
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Create a new project
+POST {{baseUrl}}/api/projects
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="Name"
+
+Project 1
+--boundary
+Content-Disposition: form-data; name="Description"
+
+Project 1 description goes here.
+--boundary
+Content-Disposition: form-data; name="RepoUrl"
+
+https://github.com/username/my-repo
+--boundary
+Content-Disposition: form-data; name="LiveUrl"
+
+https://my-project-live-url
+--boundary
+Content-Disposition: form-data; name="ProjectCoverImageFile"; filename="project-cover-1.jpg"
+Content-Type: image/jpeg
+
+< ../images/cover-images/project-cover-1.jpg
+--boundary--
+
+### Update a project by
+PATCH {{baseUrl}}/api/projects/123e082e-59eb-463b-731a-08dd5597d590
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="Name"
+
+Updated Project Name
+--boundary
+Content-Disposition: form-data; name="Description"
+
+Updated description goes here.
+--boundary
+Content-Disposition: form-data; name="RepoUrl"
+
+https://github.com/username/updated-repo
+--boundary
+Content-Disposition: form-data; name="LiveUrl"
+
+https://updated-project-live-url
+--boundary
+Content-Disposition: form-data; name="ProjectCoverImageFile"; filename="project-cover-2.jpg"
+Content-Type: image/jpeg
+
+< ../images/cover-images/project-cover-2.jpg
+--boundary--
+
+### Delete a project by Id
+DELETE {{baseUrl}}/api/projects/123e082e-59eb-463b-731a-08dd5597d590
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}

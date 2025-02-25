@@ -156,9 +156,10 @@ namespace InternIntelligence_Portfolio.API
                 {
                     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"), sqlOptions => sqlOptions
                     .MigrationsAssembly(typeof(AppDbContext).Assembly.FullName))
-                    .EnableSensitiveDataLogging();
+                    .EnableSensitiveDataLogging()
+                    .LogTo(Console.WriteLine, LogLevel.Information);
 
-                    options.AddInterceptors(sp.GetRequiredService<CustomSaveChangesInterceptor>());
+                options.AddInterceptors(sp.GetRequiredService<CustomSaveChangesInterceptor>());
                 });
             }
 
