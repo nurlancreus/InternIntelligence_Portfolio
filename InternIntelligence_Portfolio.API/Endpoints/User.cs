@@ -8,7 +8,7 @@ namespace InternIntelligence_Portfolio.API.Endpoints
     {
         public static IEndpointRouteBuilder RegisterUserEndpoints(this IEndpointRouteBuilder routes)
         {
-            var user = routes.MapGroup("api/users").RequireAuthorization(ApiConstants.AuthPolicies.OwnerPolicy);
+            var user = routes.MapGroup("api/users").RequireAuthorization(ApiConstants.AuthPolicies.OwnerPolicy).DisableAntiforgery();
 
             user.MapGet("me", async (IUserService userService, HttpContext context, CancellationToken cancellationToken = default) =>
             {

@@ -8,7 +8,7 @@ namespace InternIntelligence_Portfolio.API.Endpoints
     {
         public static IEndpointRouteBuilder RegisterProjectEndpoints(this IEndpointRouteBuilder routes)
         {
-            var project = routes.MapGroup("api/projects").RequireAuthorization(ApiConstants.AuthPolicies.OwnerPolicy);
+            var project = routes.MapGroup("api/projects").RequireAuthorization(ApiConstants.AuthPolicies.OwnerPolicy).DisableAntiforgery();
 
             project.MapGet("", async (IProjectService projectService, HttpContext context, CancellationToken cancellationToken = default) =>
             {
