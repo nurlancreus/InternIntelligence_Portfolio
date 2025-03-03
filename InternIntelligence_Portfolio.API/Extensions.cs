@@ -20,5 +20,12 @@ namespace InternIntelligence_Portfolio.API
 
             return Results.Problem(error.Message, $"{httpContext.Request.Method} {httpContext.Request.Path}", (int)error.StatusCode, error.Title, error.Title, extensions);
         }
+
+        public static bool IsTesting(this IHostEnvironment hostEnvironment)
+        {
+            ArgumentNullException.ThrowIfNull(hostEnvironment);
+
+            return hostEnvironment.IsEnvironment("Testing");
+        }
     }
 }
