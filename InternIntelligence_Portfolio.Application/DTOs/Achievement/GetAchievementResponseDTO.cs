@@ -11,6 +11,7 @@ namespace InternIntelligence_Portfolio.Application.DTOs.Achievement
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
+        public GetAchievementResponseDTO() { }
         public GetAchievementResponseDTO(AchievementEntity achievement)
         {
             Id = achievement.Id;

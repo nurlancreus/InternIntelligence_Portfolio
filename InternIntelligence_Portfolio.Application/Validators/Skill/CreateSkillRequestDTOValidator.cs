@@ -23,7 +23,9 @@ namespace InternIntelligence_Portfolio.Application.Validators.Skill
 
             RuleFor(x => x.YearsOfExperience)
                 .NotEmpty()
-                    .WithMessage("YearsOfExperience is required.");
+                    .WithMessage("YearsOfExperience is required.")
+                .Must(years => years >= 0)
+                    .WithMessage("Experience could not be negative.");
 
             RuleFor(x => x.ProficiencyLevel)
                 .NotEmpty()

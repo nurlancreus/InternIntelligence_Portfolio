@@ -14,6 +14,7 @@ namespace InternIntelligence_Portfolio.Application.DTOs.Project
         public DateTime? UpdatedAt { get; set; }
         public GetImageFileResponseDTO? ProjectCoverImageFile { get; set; }
 
+        public GetProjectResponseDTO() { }
         public GetProjectResponseDTO(ProjectEntity project)
         {
             Id = project.Id;

@@ -23,6 +23,7 @@ namespace InternIntelligence_Portfolio.Application.DTOs.User
         public IEnumerable<GetSkillResponseDTO> Skills { get; set; } = [];
         public IEnumerable<GetAchievementResponseDTO> Achievements { get; set; } = [];
 
+        public GetUserResponseDTO() { }
         public GetUserResponseDTO(ApplicationUser user)
         {
             Id = user.Id;

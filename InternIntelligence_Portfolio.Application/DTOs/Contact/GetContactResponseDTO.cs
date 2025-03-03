@@ -12,6 +12,7 @@ namespace InternIntelligence_Portfolio.Application.DTOs.Contact
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
+        public GetContactResponseDTO() { }
         public GetContactResponseDTO(ContactEntity contact)
         {
             Id = contact.Id;

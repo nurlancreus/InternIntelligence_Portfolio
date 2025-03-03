@@ -7,11 +7,12 @@ namespace InternIntelligence_Portfolio.Application.DTOs.Skill
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public string ProficiencyLevel { get; set; }
+        public string ProficiencyLevel { get; set; } = string.Empty;
         public byte YearsOfExperience { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
+        public GetSkillResponseDTO() { }
         public GetSkillResponseDTO(SkillEntity skill)
         {
             Id = skill.Id;

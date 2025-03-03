@@ -10,6 +10,8 @@ namespace InternIntelligence_Portfolio.Application.DTOs.File
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
+        public GetImageFileResponseDTO() { }
+
         public GetImageFileResponseDTO(ApplicationFile applicationFile)
         {
             Id = applicationFile.Id;
