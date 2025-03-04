@@ -8,6 +8,8 @@ namespace InternIntelligence_Portfolio.API.Configurations
     {
         public static WebApplicationBuilder ConfigureAuth(this WebApplicationBuilder builder)
         {
+            var a = builder.Configuration["Token:Access:Audience"];
+            var b = builder.Configuration["Token:Access:Issuer"];
             // Configure Authentication
             builder.Services.AddAuthentication(options =>
             {

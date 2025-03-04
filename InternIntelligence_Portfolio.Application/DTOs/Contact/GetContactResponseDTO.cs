@@ -9,6 +9,7 @@ namespace InternIntelligence_Portfolio.Application.DTOs.Contact
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
+        public bool IsAnswered {  get; set; } 
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
@@ -20,6 +21,7 @@ namespace InternIntelligence_Portfolio.Application.DTOs.Contact
             LastName = contact.LastName;
             Email = contact.Email;
             Message = contact.Message;
+            IsAnswered = contact.IsAnswered;
             CreatedAt = contact.CreatedAt;
             UpdatedAt = contact.UpdatedAt;
         }

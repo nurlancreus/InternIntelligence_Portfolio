@@ -21,6 +21,8 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 
         public async Task<Result<bool>> AnswerAsync(Guid id, AnswerContactRequestDTO answerContactRequest, CancellationToken cancellationToken = default)
         {
+            var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
             var isSuperAdminResult = _jwtSession.ValidateIfSuperAdmin();
             if (isSuperAdminResult.IsFailure) return Result<bool>.Failure(isSuperAdminResult.Error);
 
@@ -29,7 +31,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             if (contact is null)
                 return Result<bool>.Failure(Error.NotFoundError("Contact is not found."));
 
-            var isContactResponseMessageSendResult = await _contactEmailService.SendContactResponseMessageAsync(contact.FirstName, contact.LastName, contact.Email, contact.Subject, answerContactRequest.Message, cancellationToken);
+            var isContactResponseMessageSendResult = await _contactEmailService.SendContactResponseMessageAsync(contact.FirstName, contact.LastName, contact.Email, contact.Subject, contact.Message, answerContactRequest.Message, cancellationToken);
 
             if (isContactResponseMessageSendResult.IsFailure)
                 return Result<bool>.Failure(isContactResponseMessageSendResult.Error);
@@ -40,6 +42,8 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 
             if(!isSaved) 
                 return Result<bool>.Failure(Error.UnexpectedError("Contact could not be updated."));
+
+            scope.Complete();
 
             return Result<bool>.Success(true);
         }
@@ -60,12 +64,12 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
             if (!isAdded || !isSaved)
                 return Result<Guid>.Failure(Error.UnexpectedError("New contact could not be created."));
 
-            scope.Complete();
-
             var isContactReceiveMessageSentResult = await _contactEmailService.SendContactReceivedMessageAsync(contact.FirstName, contact.LastName, contact.Email, contact.Subject, cancellationToken);
 
             if (isContactReceiveMessageSentResult.IsFailure)
                 return Result<Guid>.Failure(isContactReceiveMessageSentResult.Error);
+
+            scope.Complete();
 
             return Result<Guid>.Success(contact.Id);
         }

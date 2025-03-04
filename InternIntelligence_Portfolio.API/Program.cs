@@ -1,7 +1,6 @@
 
 using InternIntelligence_Portfolio.API.Configurations;
 using InternIntelligence_Portfolio.API.Endpoints;
-using InternIntelligence_Portfolio.Infrastructure.Persistence.Context;
 
 namespace InternIntelligence_Portfolio.API
 {
