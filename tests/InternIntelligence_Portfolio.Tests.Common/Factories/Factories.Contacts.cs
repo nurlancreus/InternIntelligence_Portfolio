@@ -1,5 +1,4 @@
 ﻿using InternIntelligence_Portfolio.Application.DTOs.Contact;
-using InternIntelligence_Portfolio.Application.DTOs.Skill;
 
 namespace InternIntelligence_Portfolio.Tests.Common.Factories
 {
@@ -15,7 +14,7 @@ namespace InternIntelligence_Portfolio.Tests.Common.Factories
                     {
                         FirstName = $"{Constants.Constants.Contacts.FirstName_Valid}-{i}",
                         LastName = $"{Constants.Constants.Contacts.LastName_Valid}-{i}",
-                        Email = $"{Constants.Constants.Contacts.Email_Valid}-{i}",
+                        Email = Constants.Constants.Contacts.Email_Valid,
                         Message = $"{Constants.Constants.Contacts.Message_Valid}-{i}",
                         Subject = Constants.Constants.Contacts.Subject_Valid,
                     };

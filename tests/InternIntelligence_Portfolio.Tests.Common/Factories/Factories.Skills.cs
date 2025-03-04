@@ -20,7 +20,7 @@ namespace InternIntelligence_Portfolio.Tests.Common.Factories
                 }
             }
 
-            public static CreateSkillRequestDTO GenerateValidCreateSkillsRequestDTO()
+            public static CreateSkillRequestDTO GenerateValidCreateSkillRequestDTO()
             {
                 return new CreateSkillRequestDTO
                 {
@@ -31,7 +31,7 @@ namespace InternIntelligence_Portfolio.Tests.Common.Factories
                 };
             }
 
-            public static UpdateSkillRequestDTO GenerateValidUpdateSkillsRequestDTO()
+            public static UpdateSkillRequestDTO GenerateValidUpdateSkillRequestDTO()
             {
                 return new UpdateSkillRequestDTO
                 {
@@ -42,7 +42,7 @@ namespace InternIntelligence_Portfolio.Tests.Common.Factories
                 };
             }
 
-            public static CreateSkillRequestDTO GenerateInValidCreateSkillsRequestDTO()
+            public static CreateSkillRequestDTO GenerateInValidCreateSkillRequestDTO()
             {
                 return new CreateSkillRequestDTO
                 {
@@ -53,7 +53,7 @@ namespace InternIntelligence_Portfolio.Tests.Common.Factories
                 };
             }
 
-            public static UpdateSkillRequestDTO GenerateInValidUpdateSkillsRequestDTO()
+            public static UpdateSkillRequestDTO GenerateInValidUpdateSkillRequestDTO()
             {
                 return new UpdateSkillRequestDTO
                 {

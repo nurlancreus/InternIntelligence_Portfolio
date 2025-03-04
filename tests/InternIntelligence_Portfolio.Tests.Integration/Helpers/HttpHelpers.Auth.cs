@@ -1,60 +1,21 @@
 ﻿using InternIntelligence_Portfolio.Application.DTOs.Token;
-using InternIntelligence_Portfolio.Application.Helpers;
-using InternIntelligence_Portfolio.Domain.Entities.Identity;
-using InternIntelligence_Portfolio.Tests.Common.Constants;
 using InternIntelligence_Portfolio.Tests.Common.Factories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
+using InternIntelligence_Portfolio.Tests.Common.Constants;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Reflection;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+using System.Text;
+using Microsoft.AspNetCore.Http;
+using System.Reflection;
+using InternIntelligence_Portfolio.Application.Helpers;
+using InternIntelligence_Portfolio.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
-namespace InternIntelligence_Portfolio.Tests.Integration
+namespace InternIntelligence_Portfolio.Tests.Integration.Helpers
 {
-    public static class Extensions
+    public static partial class HttpHelpers
     {
-        public async static Task<Guid> CreateSingleSkillAsync(this HttpClient client, IServiceScope scope)
-        {
-            var request = Factories.Skills.GenerateValidCreateSkillsRequestDTO();
-
-            var response = await client.SendRequestWithAccessToken(HttpMethod.Post, "api/skills", scope, request);
-
-            response.EnsureSuccessStatusCode();
-
-            var skillId = await response.Content.ReadFromJsonAsync<Guid>();
-
-            return skillId;
-
-        }
-
-        public async static Task<IEnumerable<Guid>> CreateMultipleSkillsAsync(this HttpClient client, IServiceScope scope, byte count = 3)
-        {
-            var requestDtos = Factories.Skills.GenerateMultipleValidCreateSkillRequestDTOs(count);
-
-            List<Guid> skillIds = [];
-
-            foreach (var requestDTO in requestDtos)
-            {
-                var response = await client.SendRequestWithAccessToken(HttpMethod.Post, "api/skills", scope, requestDTO);
-
-                response.EnsureSuccessStatusCode();
-
-                var skillId = await response.Content.ReadFromJsonAsync<Guid>();
-
-                skillIds.Add(skillId);
-            }
-
-            return skillIds;
-        }
-
         public async static Task<Guid> RegisterSuperAdminAsync(this IServiceScope scope)
         {
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
@@ -100,7 +61,6 @@ namespace InternIntelligence_Portfolio.Tests.Integration
 
             return superAdminUser.Id;
         }
-
         public async static Task<string> GetSuperAdminAccessTokenAsync(this HttpClient client, IServiceScope scope)
         {
             await scope.RegisterSuperAdminAsync();
@@ -114,9 +74,11 @@ namespace InternIntelligence_Portfolio.Tests.Integration
             return tokenResponse!.AccessToken;
         }
 
-        public async static Task<HttpResponseMessage> SendRequestWithAccessToken(this HttpClient client, HttpMethod httpMethod, string requestUrl, IServiceScope scope, object? requestBody = null, bool isFromForm = false)
+        public async static Task<HttpResponseMessage> SendRequestWithAccessToken(this HttpClient client, HttpMethod httpMethod, string requestUrl, IServiceScope scope, object? requestBody = null, bool isFromForm = false, string? accessToken = null)
         {
-            var accessToken = await client.GetSuperAdminAccessTokenAsync(scope);
+            if (string.IsNullOrEmpty(accessToken))
+                accessToken = await client.GetSuperAdminAccessTokenAsync(scope);
+
             var request = new HttpRequestMessage(httpMethod, requestUrl);
 
             if (requestBody != null)

@@ -2,6 +2,7 @@
 using InternIntelligence_Portfolio.Application.DTOs.Token;
 using InternIntelligence_Portfolio.Infrastructure.Persistence.Context;
 using InternIntelligence_Portfolio.Tests.Common.Factories;
+using InternIntelligence_Portfolio.Tests.Integration.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
@@ -52,6 +53,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             // Assert
             response.EnsureSuccessStatusCode();
             var token = await response.Content.ReadFromJsonAsync<TokenDTO>();
+
             token.Should().NotBeNull();
             token.AccessToken.Should().NotBeNull();
             token.RefreshToken.Should().NotBeNull();

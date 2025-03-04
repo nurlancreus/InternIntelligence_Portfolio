@@ -1,9 +1,4 @@
 ﻿using InternIntelligence_Portfolio.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InternIntelligence_Portfolio.Tests.Common.Constants
 {

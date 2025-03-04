@@ -1,60 +1,64 @@
 ﻿using InternIntelligence_Portfolio.Application.DTOs.Achievement;
+using InternIntelligence_Portfolio.Infrastructure.Persistence.Services;
 
 namespace InternIntelligence_Portfolio.Tests.Common.Factories
 {
     public static partial class Factories
     {
-        public static IEnumerable<CreateAchievementRequestDTO> GenerateMultipleValidCreateAchievementRequestDTOs(byte count = 3)
+        public static class Achievements
         {
-            for (int i = 1; i <= count; i++)
+            public static IEnumerable<CreateAchievementRequestDTO> GenerateMultipleValidCreateAchievementRequestDTOs(byte count = 3)
             {
-                yield return new CreateAchievementRequestDTO
+                for (int i = 1; i <= count; i++)
                 {
-                    Title = $"{Constants.Constants.Achievements.Title_Valid}-{i}",
-                    Description = $"{Constants.Constants.Achievements.Description_Valid}-{i}",
+                    yield return new CreateAchievementRequestDTO
+                    {
+                        Title = $"{Constants.Constants.Achievements.Title_Valid}-{i}",
+                        Description = $"{Constants.Constants.Achievements.Description_Valid}-{i}",
+                        AchievedAt = Constants.Constants.Achievements.AchievedAt_Valid,
+                    };
+                }
+            }
+
+            public static CreateAchievementRequestDTO GenerateValidCreateAchievementRequestDTO()
+            {
+                return new CreateAchievementRequestDTO
+                {
+                    Title = Constants.Constants.Achievements.Title_Valid,
+                    Description = Constants.Constants.Achievements.Description_Valid,
                     AchievedAt = Constants.Constants.Achievements.AchievedAt_Valid,
                 };
             }
-        }
 
-        public static CreateAchievementRequestDTO GenerateValidCreateAchievementRequestDTO()
-        {
-            return new CreateAchievementRequestDTO
+            public static UpdateAchievementRequestDTO GenerateValidUpdateAchievementRequestDTO()
             {
-                Title = Constants.Constants.Achievements.Title_Valid,
-                Description = Constants.Constants.Achievements.Description_Valid,
-                AchievedAt = Constants.Constants.Achievements.AchievedAt_Valid,
-            };
-        }
+                return new UpdateAchievementRequestDTO
+                {
+                    Title = Constants.Constants.Achievements.Updated_Title_Valid,
+                    Description = Constants.Constants.Achievements.Updated_Description_Valid,
+                    AchievedAt = Constants.Constants.Achievements.Updated_AchievedAt_Valid,
+                };
+            }
 
-        public static UpdateAchievementRequestDTO GenerateValidUpdateAchievementRequestDTO()
-        {
-            return new UpdateAchievementRequestDTO
+            public static CreateAchievementRequestDTO GenerateInValidCreateAchievementRequestDTO()
             {
-                Title = Constants.Constants.Achievements.Updated_Title_Valid,
-                Description = Constants.Constants.Achievements.Updated_Description_Valid,
-                AchievedAt = Constants.Constants.Achievements.Updated_AchievedAt_Valid,
-            };
-        }
+                return new CreateAchievementRequestDTO
+                {
+                    Title = Constants.Constants.Achievements.Title_InValid,
+                    Description = Constants.Constants.Achievements.Description_InValid,
+                    AchievedAt = Constants.Constants.Achievements.AchievedAt_InValid,
+                };
+            }
 
-        public static CreateAchievementRequestDTO GenerateInValidCreateAchievementRequestDTO()
-        {
-            return new CreateAchievementRequestDTO
+            public static UpdateAchievementRequestDTO GenerateInValidUpdateAchievementRequestDTO()
             {
-                Title = Constants.Constants.Achievements.Title_InValid,
-                Description = Constants.Constants.Achievements.Description_InValid,
-                AchievedAt = Constants.Constants.Achievements.AchievedAt_InValid,
-            };
-        }
-
-        public static UpdateAchievementRequestDTO GenerateInValidUpdateAchievementRequestDTO()
-        {
-            return new UpdateAchievementRequestDTO
-            {
-                Title = Constants.Constants.Achievements.Title_InValid,
-                Description = Constants.Constants.Achievements.Description_InValid,
-                AchievedAt = Constants.Constants.Achievements.AchievedAt_InValid,
-            };
+                return new UpdateAchievementRequestDTO
+                {
+                    Title = Constants.Constants.Achievements.Title_InValid,
+                    Description = Constants.Constants.Achievements.Description_InValid,
+                    AchievedAt = Constants.Constants.Achievements.AchievedAt_InValid,
+                };
+            }
         }
     }
 }

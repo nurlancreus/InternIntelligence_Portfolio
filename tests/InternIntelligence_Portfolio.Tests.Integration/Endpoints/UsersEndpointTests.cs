@@ -2,6 +2,7 @@
 using InternIntelligence_Portfolio.Application.DTOs.User;
 using InternIntelligence_Portfolio.Infrastructure.Persistence.Context;
 using InternIntelligence_Portfolio.Tests.Common.Factories;
+using InternIntelligence_Portfolio.Tests.Integration.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;

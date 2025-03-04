@@ -2,6 +2,7 @@
 using InternIntelligence_Portfolio.Application.DTOs.Skill;
 using InternIntelligence_Portfolio.Infrastructure.Persistence.Context;
 using InternIntelligence_Portfolio.Tests.Common.Factories;
+using InternIntelligence_Portfolio.Tests.Integration.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -80,7 +81,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
         public async Task CreateAsync_WhenProvidingValidRequest_ShouldReturnId()
         {
             // Arrange
-            var request = Factories.Skills.GenerateValidCreateSkillsRequestDTO();
+            var request = Factories.Skills.GenerateValidCreateSkillRequestDTO();
 
             // Act
             var response = await _client.SendRequestWithAccessToken(HttpMethod.Post, "api/skills", _scope, request);
@@ -96,14 +97,15 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
         {
             // Arrange
             var id = await _client.CreateSingleSkillAsync(_scope);
-            var request = Factories.Skills.GenerateValidUpdateSkillsRequestDTO();
+            var request = Factories.Skills.GenerateValidUpdateSkillRequestDTO();
+            var accessToken = await _client.GetSuperAdminAccessTokenAsync(_scope);
 
-            var skillResponse = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/skills/{id}", _scope);
+            var skillResponse = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/skills/{id}", _scope, accessToken: accessToken);
 
             var skill = await skillResponse.Content.ReadFromJsonAsync<GetSkillResponseDTO>();
 
             // Act
-            var response = await _client.SendRequestWithAccessToken(HttpMethod.Patch, $"api/skills/{id}", _scope, request);
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Patch, $"api/skills/{id}", _scope, request, accessToken: accessToken);
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -111,7 +113,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             var updatedSkillId = await response.Content.ReadFromJsonAsync<Guid>();
             updatedSkillId.Should().NotBeEmpty();
 
-            var updatedSkillResponse = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/skills/{id}", _scope);
+            var updatedSkillResponse = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/skills/{id}", _scope, accessToken: accessToken);
 
             var updatedSkill = await updatedSkillResponse.Content.ReadFromJsonAsync<GetSkillResponseDTO>();
             updatedSkill.Should().NotBeNull();
@@ -120,12 +122,39 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             updatedSkill.Name.Should().NotBeEquivalentTo(skill.Name);
         }
 
+        [Fact]
+        public async Task DeleteAsync_WhenProvidingValidRequest_ShouldReturnTrue()
+        {
+            // Arrange
+            const byte skillsCount = 5;
+            const byte countAfterDelete = skillsCount - 1;
+            var ids = await _client.CreateMultipleSkillsAsync(_scope, skillsCount);
+
+            var id = ids.First();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Delete, $"api/skills/{id}", _scope);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+
+            var getAllResponse = await _client.SendRequestWithAccessToken(HttpMethod.Get, "api/skills", _scope);
+
+            var skills = await getAllResponse.Content.ReadFromJsonAsync<IEnumerable<GetSkillResponseDTO>>();
+
+            skills.Should().NotBeEmpty();
+            skills.Count().Should().Be(countAfterDelete);
+            skills.Select(skill => skill.Id).Contains(id).Should().BeFalse();
+        }
+
         // Invalid tests
         [Fact]
         public async Task GetAllAsync_WhenProvidingExtraRequest_ShouldReturnWrongCount()
         {
             // Arrange
             const byte skillsCount = 5;
+            const byte skillsCountIfExtraEntityExist = skillsCount + 1;
+
             var id = await _client.CreateSingleSkillAsync(_scope);
             var ids = await _client.CreateMultipleSkillsAsync(_scope, skillsCount);
 
@@ -137,7 +166,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             var skills = await response.Content.ReadFromJsonAsync<IEnumerable<GetSkillResponseDTO>>();
 
             skills.Should().NotBeEmpty();
-            skills.Count().Should().Be(skillsCount + 1);
+            skills.Count().Should().Be(skillsCountIfExtraEntityExist);
             skills.FirstOrDefault(skill => !ids.Contains(skill.Id))?.Id.Should().Be(id);
         }
 
@@ -146,9 +175,10 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
         {
             // Arrange
             var _ = await _client.CreateSingleSkillAsync(_scope);
+            var invalidId = Guid.NewGuid();
 
             // Act
-            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/skills/{Guid.NewGuid()}", _scope);
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/skills/{invalidId}", _scope);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -158,7 +188,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
         public async Task CreateAsync_WhenProvidingInValidRequest_ShouldReturnBadRequest()
         {
             // Arrange
-            var request = Factories.Skills.GenerateInValidCreateSkillsRequestDTO();
+            var request = Factories.Skills.GenerateInValidCreateSkillRequestDTO();
 
             // Act
             var response = await _client.SendRequestWithAccessToken(HttpMethod.Post, "api/skills", _scope, request);
@@ -172,13 +202,39 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
         {
             // Arrange
             var id = await _client.CreateSingleSkillAsync(_scope);
-            var request = Factories.Skills.GenerateInValidUpdateSkillsRequestDTO();
+            var request = Factories.Skills.GenerateInValidUpdateSkillRequestDTO();
 
             // Act
             var response = await _client.SendRequestWithAccessToken(HttpMethod.Patch, $"api/skills/{id}", _scope, request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenProvidingInValidRequest_ShouldReturnNotFound()
+        {
+            // Arrange
+            const byte skillsCount = 5;
+            const byte countAfterDelete = skillsCount; // if invalid request, count should be the same
+            var ids = await _client.CreateMultipleSkillsAsync(_scope, skillsCount);
+
+            var id = ids.First();
+            var invalidId = Guid.NewGuid();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Delete, $"api/skills/{invalidId}", _scope);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+            var getAllResponse = await _client.SendRequestWithAccessToken(HttpMethod.Get, "api/skills", _scope);
+
+            var skills = await getAllResponse.Content.ReadFromJsonAsync<IEnumerable<GetSkillResponseDTO>>();
+
+            skills.Should().NotBeEmpty();
+            skills.Count().Should().Be(countAfterDelete);
+            skills.Select(skill => skill.Id).Contains(id).Should().BeTrue();
         }
     }
 }
