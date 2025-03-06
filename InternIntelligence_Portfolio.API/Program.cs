@@ -21,8 +21,7 @@ namespace InternIntelligence_Portfolio.API
                .RegisterProjectEndpoints()
                .RegisterAchievementEndpoints()
                .RegisterSkillEndpoints()
-               .RegisterContactEndpoints();
-               
+               .RegisterContactEndpoints();     
 
             app.Run();
         }

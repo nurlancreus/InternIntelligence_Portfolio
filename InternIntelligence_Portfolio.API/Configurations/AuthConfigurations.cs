@@ -10,6 +10,7 @@ namespace InternIntelligence_Portfolio.API.Configurations
         {
             var a = builder.Configuration["Token:Access:Audience"];
             var b = builder.Configuration["Token:Access:Issuer"];
+            var c = builder.Configuration["Token:Access:SecurityKey"];
             // Configure Authentication
             builder.Services.AddAuthentication(options =>
             {

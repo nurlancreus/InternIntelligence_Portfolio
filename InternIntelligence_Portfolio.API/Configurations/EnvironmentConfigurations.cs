@@ -2,16 +2,16 @@
 {
     public static class EnvironmentConfigurations
     {
-        public static WebApplicationBuilder ConfigureEnvironments(this WebApplicationBuilder builder)
+        public static IConfigurationBuilder ConfigureEnvironments<T>(this IConfigurationBuilder configurationBuilder, IHostEnvironment hostEnvironment) where T : class
         {
-            builder.Configuration
+            configurationBuilder
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{hostEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
-                .AddUserSecrets<Program>(); // Load User Secrets in ALL environments
+                .AddUserSecrets<T>(); // Load User Secrets in ALL environments
 
-            return builder;
+            return configurationBuilder;
         }
     }
 }

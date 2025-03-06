@@ -14,7 +14,7 @@ namespace InternIntelligence_Portfolio.API.Configurations
         {
             #region Configure Environments
             // Load configurations based on environment
-            builder.ConfigureEnvironments();
+            builder.Configuration.ConfigureEnvironments<Program>(builder.Environment);
 
             #endregion
 

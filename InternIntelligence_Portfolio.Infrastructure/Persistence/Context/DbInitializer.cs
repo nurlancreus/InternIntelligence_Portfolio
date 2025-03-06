@@ -11,9 +11,9 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Context
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
-            string superAdminEmail = "admin@portfolio.com";
-            string superAdminPassword = "Ghujtyrtyu456$";
-            string superAdminRole = "SuperAdmin";
+            const string superAdminEmail = "admin@portfolio.com";
+            const string superAdminPassword = "Ghujtyrtyu456$";
+            const string superAdminRole = "SuperAdmin";
 
             if (!await roleManager.RoleExistsAsync(superAdminRole))
             {
