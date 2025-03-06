@@ -41,6 +41,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             _client.Dispose();
         }
 
+        // Valid
         [Fact]
         public async Task GetMeAsync_WhenProvidingValidRequest_ShouldReturnUserData()
         {
@@ -73,6 +74,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             isSuccess.Should().BeTrue();
         }
 
+        // InValid
         [Fact]
         public async Task ChangePictureAsync_WhenProvidingInValidRequest_ShouldReturnBadRequest()
         {
@@ -84,6 +86,33 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task GetMeAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            var invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, "api/users/me", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task ChangePictureAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            var invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+            var request = Factories.Users.GenerateValidChangeProfilePictureRequestDTO();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Patch, "api/users/change-picture", _scope, request, accessToken: invalidAccessToken, isFromForm: true);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
     }
 }

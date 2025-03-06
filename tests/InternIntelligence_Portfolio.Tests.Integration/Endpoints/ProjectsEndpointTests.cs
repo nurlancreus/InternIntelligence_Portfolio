@@ -235,5 +235,84 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             projects.Count().Should().Be(countAfterDelete);
             projects.Select(project => project.Id).Contains(id).Should().BeTrue();
         }
+
+        [Fact]
+        public async Task GetAllAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+            const byte projectsCount = 5;
+
+            var _ = await _client.CreateMultipleProjectsAsync(_scope, projectsCount);
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, "api/projects", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task GetAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            var id = await _client.CreateSingleProjectAsync(_scope);
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/projects/{id}", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task CreateAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+            var request = Factories.Projects.GenerateValidCreateProjectRequestDTO();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Post, "api/projects", _scope, request, accessToken: invalidAccessToken, isFromForm: true);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            var id = await _client.CreateSingleProjectAsync(_scope);
+            var request = Factories.Projects.GenerateValidCreateProjectRequestDTO();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Patch, $"api/projects/{id}", _scope, request, accessToken: invalidAccessToken, isFromForm: true);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            const byte projectsCount = 5;
+
+            var ids = await _client.CreateMultipleProjectsAsync(_scope, projectsCount);
+
+            var id = ids.First();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Delete, $"api/projects/{id}", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
     }
 }

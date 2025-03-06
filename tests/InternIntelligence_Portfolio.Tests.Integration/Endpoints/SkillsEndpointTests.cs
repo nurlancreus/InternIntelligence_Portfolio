@@ -236,5 +236,84 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             skills.Count().Should().Be(countAfterDelete);
             skills.Select(skill => skill.Id).Contains(id).Should().BeTrue();
         }
+
+        [Fact]
+        public async Task GetAllAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+            const byte skillsCount = 5;
+
+            var _ = await _client.CreateMultipleSkillsAsync(_scope, skillsCount);
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, "api/skills", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task GetAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            var id = await _client.CreateSingleSkillAsync(_scope);
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/skills/{id}", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task CreateAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+            var request = Factories.Skills.GenerateValidCreateSkillRequestDTO();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Post, "api/skills", _scope, request, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            var id = await _client.CreateSingleSkillAsync(_scope);
+            var request = Factories.Skills.GenerateValidUpdateSkillRequestDTO();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Patch, $"api/skills/{id}", _scope, request, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            const byte skillsCount = 5;
+
+            var ids = await _client.CreateMultipleSkillsAsync(_scope, skillsCount);
+
+            var id = ids.First();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Delete, $"api/skills/{id}", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
     }
 }

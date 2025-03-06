@@ -7,6 +7,8 @@ namespace InternIntelligence_Portfolio.Tests.Common.Factories
     {
         public static class Auth
         {
+            public static string GenerateInValidAccessToken() => Constants.Constants.Auth.InValidAccessToken;
+
             public static ApplicationUser GenerateValidSuperAdmin()
             {
                 return ApplicationUser.Create(

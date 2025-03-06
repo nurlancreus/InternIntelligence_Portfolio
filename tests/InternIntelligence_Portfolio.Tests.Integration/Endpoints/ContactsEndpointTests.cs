@@ -133,7 +133,6 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
 
             var contacts = await getAllResponse.Content.ReadFromJsonAsync<IEnumerable<GetContactResponseDTO>>();
 
-            contacts.Should().NotBeEmpty();
             contacts.Count().Should().Be(countAfterDelete);
             contacts.Select(contact => contact.Id).Contains(id).Should().BeFalse();
         }
@@ -232,6 +231,70 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             contacts.Should().NotBeEmpty();
             contacts.Count().Should().Be(countAfterDelete);
             contacts.Select(contact => contact.Id).Contains(id).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task GetAllAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+            const byte contactsCount = 5;
+
+            var _ = await _client.CreateMultipleContactsAsync(_scope, contactsCount);
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, "api/contacts", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task GetAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            var id = await _client.CreateSingleContactAsync(_scope);
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/contacts/{id}", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task AnswerAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+            var request = Factories.Contacts.GenerateValidAnswerContactRequestDTO();
+            var id = await _client.CreateSingleContactAsync(_scope);
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Patch, $"api/contacts/{id}/answer", _scope, request, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            const byte contactsCount = 5;
+
+            var ids = await _client.CreateMultipleContactsAsync(_scope, contactsCount);
+
+            var id = ids.First();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Delete, $"api/contacts/{id}", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
     }
 }

@@ -235,5 +235,84 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             achievements.Count().Should().Be(countAfterDelete);
             achievements.Select(achievement => achievement.Id).Contains(id).Should().BeTrue();
         }
+
+        [Fact]
+        public async Task GetAllAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+            const byte achievementsCount = 5;
+
+            var _ = await _client.CreateMultipleAchievementsAsync(_scope, achievementsCount);
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, "api/achievements", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task GetAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            var id = await _client.CreateSingleAchievementAsync(_scope);
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/achievements/{id}", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task CreateAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+            var request = Factories.Achievements.GenerateValidCreateAchievementRequestDTO();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Post, "api/achievements", _scope, request, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            var id = await _client.CreateSingleAchievementAsync(_scope);
+            var request = Factories.Achievements.GenerateValidUpdateAchievementRequestDTO();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Patch, $"api/achievements/{id}", _scope, request, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenProvidingInValidAccessToken_ShouldReturnUnAuthorized()
+        {
+            // Arrange
+            string invalidAccessToken = Factories.Auth.GenerateInValidAccessToken();
+
+            const byte achievementsCount = 5;
+
+            var ids = await _client.CreateMultipleAchievementsAsync(_scope, achievementsCount);
+
+            var id = ids.First();
+
+            // Act
+            var response = await _client.SendRequestWithAccessToken(HttpMethod.Delete, $"api/achievements/{id}", _scope, accessToken: invalidAccessToken);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using InternIntelligence_Portfolio.API;
+using InternIntelligence_Portfolio.API.Configurations;
 using InternIntelligence_Portfolio.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InternIntelligence_Portfolio.Tests.Integration
@@ -17,12 +17,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration
             // Manually load User Secrets for the Testing project
             builder.ConfigureAppConfiguration((context, configBuilder) =>
             {
-                configBuilder
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                    .AddUserSecrets<TestingWebApplicationFactory>() // Load User Secrets of the Testing project
-                    .AddEnvironmentVariables();
+                configBuilder.ConfigureEnvironments<TestingWebApplicationFactory>(context.HostingEnvironment);
             });
 
             builder.ConfigureServices((context, services) =>

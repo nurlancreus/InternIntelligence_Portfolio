@@ -4,6 +4,8 @@
     {
         public static class Auth
         {
+            public const string InValidAccessToken = "invalid-token";
+
             public const string SuperAdmin_Role = "SuperAdmin";
 
             public const string FirstName_Valid = "Super";

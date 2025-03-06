@@ -23,7 +23,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Helpers
 
             var superAdminUser = await userManager.FindByNameAsync(Constants.Auth.UserName_Valid);
 
-            if (superAdminUser is null)
+            if (superAdminUser == null)
             {
                 superAdminUser = Factories.Auth.GenerateValidSuperAdmin();
 
@@ -37,7 +37,7 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Helpers
 
             var superAdminRole = await roleManager.FindByNameAsync(Constants.Auth.SuperAdmin_Role);
 
-            if (superAdminRole is null)
+            if (superAdminRole == null)
             {
                 superAdminRole = new IdentityRole<Guid>(Constants.Auth.SuperAdmin_Role);
 
@@ -71,7 +71,10 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Helpers
             loginResponse.EnsureSuccessStatusCode();
 
             var tokenResponse = await loginResponse.Content.ReadFromJsonAsync<TokenDTO>();
-            return tokenResponse!.AccessToken;
+
+            if (tokenResponse == null) throw new InvalidOperationException("Could not get token response from login request");
+
+            return tokenResponse.AccessToken;
         }
 
         public async static Task<HttpResponseMessage> SendRequestWithAccessToken(this HttpClient client, HttpMethod httpMethod, string requestUrl, IServiceScope scope, object? requestBody = null, bool isFromForm = false, string? accessToken = null)
