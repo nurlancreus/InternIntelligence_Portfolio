@@ -24,7 +24,7 @@ The client should define settings in either `appsettings.json` or `secrets.json`
   "Token": {
     "Access": {
       "Audience": "https://localhost:3000/",
-      "Issuer": "https://localhost:7223/",
+      "Issuer": "https://localhost:7105/",
       "SecurityKey": "2992715c-8193-4635-bf7c-9dfbe9c5735a",
       "AccessTokenLifeTimeInMinutes": 10
     },
