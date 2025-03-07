@@ -6,6 +6,7 @@
         {
             public const string FirstName_Valid = "John" ;
             public const string LastName_Valid = "Doe" ;
+            // Provide Valid Email HOST
             public const string Email_Valid = "kahop73259@egvoo.com";
             public const string Message_Valid = "Hello, would like to get your services!" ;
             public const string Subject_Valid = "job_opportunity";

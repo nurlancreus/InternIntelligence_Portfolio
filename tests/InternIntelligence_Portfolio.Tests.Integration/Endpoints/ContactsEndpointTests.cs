@@ -89,6 +89,13 @@ namespace InternIntelligence_Portfolio.Tests.Integration.Endpoints
             response.EnsureSuccessStatusCode();
             var contactId = await response.Content.ReadFromJsonAsync<Guid>();
             contactId.Should().NotBeEmpty();
+
+            var getContactResponse = await _client.SendRequestWithAccessToken(HttpMethod.Get, $"api/contacts/{contactId}", _scope);
+
+            var contact = await getContactResponse.Content.ReadFromJsonAsync<GetContactResponseDTO>();
+
+            contact.Should().NotBeNull();
+            contact.Id.Should().Be(contactId);
         }
 
         [Fact]

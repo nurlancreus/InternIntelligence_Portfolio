@@ -21,7 +21,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 
         public async Task<Result<bool>> AnswerAsync(Guid id, AnswerContactRequestDTO answerContactRequest, CancellationToken cancellationToken = default)
         {
-            var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
             var isSuperAdminResult = _jwtSession.ValidateIfSuperAdmin();
             if (isSuperAdminResult.IsFailure) return Result<bool>.Failure(isSuperAdminResult.Error);
@@ -40,7 +40,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 
             var isSaved = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            if(!isSaved) 
+            if (!isSaved)
                 return Result<bool>.Failure(Error.UnexpectedError("Contact could not be updated."));
 
             scope.Complete();
@@ -50,7 +50,7 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Services
 
         public async Task<Result<Guid>> CreateAsync(CreateContactRequestDTO createContactRequest, CancellationToken cancellationToken = default)
         {
-            var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
             if (!Enum.TryParse<ContactSubject>(createContactRequest.Subject, true, out var contactSubject))
                 return Result<Guid>.Failure(Error.UnexpectedError("Could not parse contact subject enum."));

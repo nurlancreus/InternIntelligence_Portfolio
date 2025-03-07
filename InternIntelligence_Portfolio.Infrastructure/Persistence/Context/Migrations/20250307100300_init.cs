@@ -279,7 +279,8 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Context.Migrat
                         name: "FK_ApplicationFiles_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -344,6 +345,12 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Context.Migrat
                 name: "IX_Projects_UserId",
                 table: "Projects",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Skills_Name",
+                table: "Skills",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Skills_UserId",

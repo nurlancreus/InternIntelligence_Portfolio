@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Context.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250223123330_init")]
+    [Migration("20250307100300_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -312,6 +312,9 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Context.Migrat
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Skills");
@@ -564,7 +567,8 @@ namespace InternIntelligence_Portfolio.Infrastructure.Persistence.Context.Migrat
                 {
                     b.HasOne("InternIntelligence_Portfolio.Domain.Entities.Project", "Project")
                         .WithOne("CoverImageFile")
-                        .HasForeignKey("InternIntelligence_Portfolio.Domain.Entities.Files.ProjectCoverImageFile", "ProjectId");
+                        .HasForeignKey("InternIntelligence_Portfolio.Domain.Entities.Files.ProjectCoverImageFile", "ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Project");
                 });

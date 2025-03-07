@@ -48,7 +48,7 @@ GET {{baseUrl}}/api/skills
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 
 ### Get skill by id
-GET {{baseUrl}}/api/skills/c5758570-8549-4a0f-add2-08dd54d890b7
+GET {{baseUrl}}/api/skills/436bc62d-dd9a-40ae-2fcf-08dd5d5fb3c8
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 
 ### Create a new skill
@@ -64,19 +64,19 @@ Content-Type: application/json
 }
 
 ### Update a skill
-PATCH {{baseUrl}}/api/skills/c5758570-8549-4a0f-add2-08dd54d890b7
+PATCH {{baseUrl}}/api/skills/436bc62d-dd9a-40ae-2fcf-08dd5d5fb3c8
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 Content-Type: application/json
 
 {
- "Name": "Backend",
+ "Name": "Programming",
  "Description": "I love C#",
  "ProficiencyLevel": "Advanced",
- "YearsOfExperience": "5"
+ "YearsOfExperience": "7"
 }
 
 ### Delete a skill by Id
-DELETE {{baseUrl}}/api/skills/95540373-ae4f-4233-ddbe-08dd54d77808
+DELETE {{baseUrl}}/api/skills/436bc62d-dd9a-40ae-2fcf-08dd5d5fb3c8
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 
 ### ACHIEVEMENT ENDPOINTS
@@ -86,7 +86,7 @@ GET {{baseUrl}}/api/achievements
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 
 ### Get achievement by ID
-GET {{baseUrl}}/api/achievements/d76363f2-912d-4e42-1d9c-08dd558aba56
+GET {{baseUrl}}/api/achievements/44efa669-e446-4468-2349-08dd5d5fdce3
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 
 ### Create a new achievement
@@ -101,7 +101,7 @@ Content-Type: application/json
 }
 
 ### Update an achievement
-PATCH {{baseUrl}}/api/achievements/d76363f2-912d-4e42-1d9c-08dd558aba56
+PATCH {{baseUrl}}/api/achievements/44efa669-e446-4468-2349-08dd5d5fdce3
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 Content-Type: application/json
 
@@ -112,7 +112,7 @@ Content-Type: application/json
 }
 
 ### Delete an achievement by ID
-DELETE {{baseUrl}}/api/achievements/08d549ee-b9f0-4510-1d9e-08dd558aba56
+DELETE {{baseUrl}}/api/achievements/44efa669-e446-4468-2349-08dd5d5fdce3
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 
 ### PROJECT ENDPOINTS
@@ -122,7 +122,7 @@ GET {{baseUrl}}/api/projects
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 
 ### Get a project by Id
-GET {{baseUrl}}/api/projects/123e082e-59eb-463b-731a-08dd5597d590
+GET {{baseUrl}}/api/projects/07031f32-20d7-4b57-d8f9-08dd5d5ff7d8
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 
 ### Create a new project
@@ -154,7 +154,7 @@ Content-Type: image/jpeg
 --boundary--
 
 ### Update a project by
-PATCH {{baseUrl}}/api/projects/123e082e-59eb-463b-731a-08dd5597d590
+PATCH {{baseUrl}}/api/projects/07031f32-20d7-4b57-d8f9-08dd5d5ff7d8
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
 Content-Type: multipart/form-data; boundary=boundary
 
@@ -165,7 +165,7 @@ Updated Project Name
 --boundary
 Content-Disposition: form-data; name="Description"
 
-Updated description goes here.
+Updated description.
 --boundary
 Content-Disposition: form-data; name="RepoUrl"
 
@@ -182,5 +182,39 @@ Content-Type: image/jpeg
 --boundary--
 
 ### Delete a project by Id
-DELETE {{baseUrl}}/api/projects/123e082e-59eb-463b-731a-08dd5597d590
+DELETE {{baseUrl}}/api/projects/07031f32-20d7-4b57-d8f9-08dd5d5ff7d8
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### CONTACT ENDPOINTS
+### Get all contacts
+GET {{baseUrl}}/api/contacts
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Get a contact by Id
+GET {{baseUrl}}/api/contacts/baed26dc-9bc7-40e9-87f7-08dd5d623a0b
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+
+### Create a new contact
+POST {{baseUrl}}/api/contacts
+Content-Type: application/json
+
+{
+  "FirstName": "John",
+  "LastName": "Doe",
+  "Email": "kahop73259@egvoo.com",
+  "Message": "Hello, would like to get your services!",
+  "Subject": "job_opportunity"
+}
+
+### Answer a contact
+PATCH {{baseUrl}}/api/contacts/5abaf5f0-d045-4f33-7040-08dd5d6cafd1/answer
+Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "Message": "Yes, would love to work together!"
+}
+
+### Delete a contact by Id
+DELETE {{baseUrl}}/api/contacts/5abaf5f0-d045-4f33-7040-08dd5d6cafd1
 Authorization: Bearer {{loginSuperAdmin.response.body.$.accessToken}}
